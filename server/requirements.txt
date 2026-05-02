@@ -20,5 +20,8 @@ python-dotenv==1.0.1
 # Additional Security
 httpx==0.28.1
 
+# Rate Limiting (حماية من DDoS & Brute Force)
+slowapi==0.1.9
+
 # Database (SQLite3 مدمج في Python)
 # لا يحتاج تثبيت
