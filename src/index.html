@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <title>ذخيرة - مشغل المحاكيات</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🔥 ذخيرة 🔥</div>
+        <div class="user-profile" id="profile">
+            👤 لاعب | 🏆 0/15 | ⭐ مستوى 1
+        </div>
+    </div>
+
+    <div class="main-container">
+        <!-- الخانات هنا -->
+        <div class="emulator-grid" id="emulator-grid">
+            <!-- ستضاف الخانات عن طريق JavaScript -->
+        </div>
+
+        <!-- الديوانية -->
+        <div class="chat-panel">
+            <h3>💬 الديوانية</h3>
+            <div class="friends-list" id="friends-list"></div>
+            <button id="add-friend">+ إضافة صديق</button>
+            <div class="chat-messages" id="chat-messages"></div>
+            <input type="text" id="chat-input" placeholder="اكتب رسالة...">
+        </div>
+    </div>
+
+    <div class="season-section">
+        <button id="season-btn" class="season-btn">🌟 SEASON 1 🌟</button>
+        <div class="xp-bar">
+            <div class="xp-fill" id="xp-fill"></div>
+        </div>
+        <div class="xp-text" id="xp-text">المستوى 1 | 0 / 100 XP</div>
+        <button class="bp-btn">🔥 Season Pass - 3.75 ريال</button>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
