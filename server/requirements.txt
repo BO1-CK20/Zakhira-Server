@@ -1,31 +1,24 @@
 # Dakhira Pro Webhook Server Requirements
 # تثبيت: pip install -r requirements.txt
 
-# Web Framework
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
+# Web Framework - Updated for Python 3.13 compatibility
+fastapi==0.115.11
+uvicorn[standard]==0.34.0
 
 # HTTP Requests
-requests==2.31.0
+requests==2.32.3
 
-# Cryptography (للتحقق من توقيع PayPal)
-cryptography==42.0.0
-
-# Data Validation
-pydantic==2.5.0
+# Data Validation - Updated for Python 3.13
+pydantic==2.10.6
 
 # Security
-python-multipart==0.0.6
-
-# Rate Limiting (حماية DDoS & Brute Force)
-slowapi==0.1.9
-redis==5.0.0
+python-multipart==0.0.20
 
 # Environment Variables (لقراءة ملف .env)
-python-dotenv==1.0.0
+python-dotenv==1.0.1
 
 # Additional Security
-httpx==0.25.0  # For async requests with timeout
+httpx==0.28.1
 
 # Database (SQLite3 مدمج في Python)
 # لا يحتاج تثبيت
