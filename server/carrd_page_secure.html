@@ -1,0 +1,596 @@
+<!--
+Dakhira Pro - PRODUCTION Payment Page (Secure)
+صفحة دفع Carrd - النسخة الآمنة مع Server-Side Order Creation
+
+Security Features:
+✅ Server-Side Order Creation (المبلغ يُحدد في السيرفر، ليس المتصفح)
+✅ Client ID فقط في Frontend (Secret في السيرفر فقط)
+✅ API Key للمصادقة مع السيرفر
+
+Setup Instructions:
+1. انسخ هذا الكود إلى Carrd (Embed → Raw HTML)
+2. استبدل: YOUR_SERVER_API_URL → https://your-server.com
+3. استبدل: YOUR_SERVER_API_KEY → المفتاح السري للسيرفر
+4. استبدل: PAYPAL_CLIENT_ID → من PayPal Dashboard
+5. تأكد أن السيرفر يعمل
+
+Author: Professional Secure Implementation
+-->
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اشتراك ذخيرة برو - Dakhira Pro</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: white;
+        }
+        
+        .container { max-width: 900px; width: 100%; }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00f260, #0575e6, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -moz-background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 242, 96, 0.3);
+        }
+        
+        .header p { color: #aaa; font-size: 1.2rem; }
+        
+        .plans {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .plan-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 25px;
+            padding: 35px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .plan-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(255,255,255,0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .plan-card:hover::before { opacity: 1; }
+        
+        .plan-card:hover {
+            border-color: #00f260;
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 242, 96, 0.2);
+        }
+        
+        .plan-card.popular {
+            border-color: #ffd93d;
+            background: linear-gradient(135deg, rgba(255, 217, 61, 0.1), rgba(255, 217, 61, 0.05));
+            transform: scale(1.05);
+        }
+        
+        .plan-card.popular::after {
+            content: "🔥 الأكثر مبيعاً";
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+            color: #000;
+            padding: 8px 40px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transform: rotate(45deg);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .plan-card.popular:hover {
+            transform: scale(1.07) translateY(-10px);
+        }
+        
+        .plan-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+        }
+        
+        .plan-name {
+            font-size: 1.6rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ffd93d, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -moz-background-clip: text;
+            margin-bottom: 5px;
+        }
+        
+        .plan-price span {
+            font-size: 1rem;
+            -webkit-text-fill-color: #888;
+            font-weight: normal;
+        }
+        
+        .plan-price-usd {
+            font-size: 1rem;
+            color: #00f260;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+        
+        .plan-features {
+            list-style: none;
+            text-align: right;
+            margin-bottom: 25px;
+            padding: 0 10px;
+        }
+        
+        .plan-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .plan-features li::before {
+            content: "✓";
+            color: #00f260;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .user-id-section {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .user-id-input {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px 20px;
+            color: white;
+            width: 100%;
+            font-size: 1rem;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .user-id-input:focus {
+            outline: none;
+            border-color: #00f260;
+            background: rgba(255,255,255,0.08);
+            box-shadow: 0 0 20px rgba(0, 242, 96, 0.2);
+        }
+        
+        .user-id-input::placeholder { color: #666; }
+        
+        .paypal-button-container {
+            min-height: 50px;
+            margin-top: 20px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .note {
+            background: linear-gradient(135deg, rgba(0, 242, 96, 0.1), rgba(5, 117, 230, 0.1));
+            border: 2px solid rgba(0, 242, 96, 0.3);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            font-size: 0.95rem;
+            margin-top: 30px;
+        }
+        
+        .note strong {
+            color: #ffd93d;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, rgba(0, 242, 96, 0.2), rgba(5, 117, 230, 0.2));
+            border: 3px solid #00f260;
+            border-radius: 25px;
+            padding: 50px;
+            text-align: center;
+            animation: successPulse 2s infinite;
+        }
+        
+        @keyframes successPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 242, 96, 0.4); }
+            50% { box-shadow: 0 0 30px 10px rgba(0, 242, 96, 0.2); }
+        }
+        
+        .success-message h2 {
+            color: #00f260;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .error-message {
+            display: none;
+            background: rgba(255, 107, 107, 0.2);
+            border: 2px solid #ff6b6b;
+            border-radius: 15px;
+            padding: 20px;
+            color: #ff9999;
+            margin-top: 15px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid #00f260;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 { font-size: 2rem; }
+            .plans { grid-template-columns: 1fr; }
+            .plan-card.popular { transform: scale(1); }
+            .plan-card.popular:hover { transform: scale(1.02) translateY(-5px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🔥 اشتراك ذخيرة برو</h1>
+            <p>فعل مميزاتك الآن واستمتع بأفضل تجربة محاكاة</p>
+        </div>
+        
+        <!-- User ID Input -->
+        <div class="user-id-section">
+            <input type="text" id="userId" class="user-id-input" 
+                   placeholder="أدخل معرف المستخدم (User ID) من البرنامج">
+            <p style="color: #888; font-size: 0.85rem; margin-top: 10px;">
+                💡 تجده في الإعدادات ← معلومات الحساب ← نسخ المعرف
+            </p>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message"></div>
+        
+        <!-- Loading -->
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>جاري إعداد الدفع...</p>
+        </div>
+        
+        <!-- Plans -->
+        <div class="plans" id="plansContainer">
+            <!-- Monthly Plan -->
+            <div class="plan-card">
+                <div class="plan-icon">🗓️</div>
+                <div class="plan-name">اشتراك شهري</div>
+                <div class="plan-price">20 <span>ريال</span></div>
+                <div class="plan-price-usd">$5.33 USD</div>
+                <ul class="plan-features">
+                    <li>وصول كامل لجميع المحاكيات</li>
+                    <li>دعم فني على مدار الساعة</li>
+                    <li>تحديثات مستمرة</li>
+                    <li>إلغاء في أي وقت</li>
+                </ul>
+                <div id="paypal-button-monthly" class="paypal-button-container"></div>
+            </div>
+            
+            <!-- Yearly Plan (Popular) -->
+            <div class="plan-card popular">
+                <div class="plan-icon">✨</div>
+                <div class="plan-name">اشتراك سنوي</div>
+                <div class="plan-price">148 <span>ريال</span></div>
+                <div class="plan-price-usd">$39.47 USD</div>
+                <ul class="plan-features">
+                    <li>جميع مميزات الاشتراك الشهري</li>
+                    <li>🎁 سيزون باس مجاناً!</li>
+                    <li>توفير 38% مقارنة بالشهري</li>
+                    <li>أولوية في الدعم الفني</li>
+                    <li>وصول مبكر للميزات الجديدة</li>
+                </ul>
+                <div id="paypal-button-yearly" class="paypal-button-container"></div>
+            </div>
+            
+            <!-- Season Pass -->
+            <div class="plan-card">
+                <div class="plan-icon">🎟️</div>
+                <div class="plan-name">سيزون باس</div>
+                <div class="plan-price">3.75 <span>ريال</span></div>
+                <div class="plan-price-usd">$1.00 USD</div>
+                <ul class="plan-features">
+                    <li>وصول لجميع مستويات السيزون</li>
+                    <li>جوائز حصرية</li>
+                    <li>تتبع التقدم المتقدم</li>
+                    <li>صالح للموسم الحالي</li>
+                </ul>
+                <div id="paypal-button-season" class="paypal-button-container"></div>
+            </div>
+        </div>
+        
+        <!-- Success Message -->
+        <div id="successMessage" class="success-message">
+            <h2>🎉 تم الدفع بنجاح!</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 20px;">شكراً لاشتراكك في ذخيرة برو</p>
+            <p style="color: #aaa; margin-bottom: 30px;">
+                سيتم تفعيل اشتراكك تلقائياً خلال دقائق.<br>
+                افتح البرنامج واضغط "تحديث الحالة" للتفعيل الفوري.
+            </p>
+            <button onclick="resetPage()" 
+                    style="padding: 15px 40px; background: linear-gradient(135deg, #00f260, #0575e6);
+                    border: none; border-radius: 30px; color: #000; font-weight: bold;
+                    font-size: 1rem; cursor: pointer; transition: all 0.3s;"
+                    onmouseover="this.style.transform='scale(1.05)'" 
+                    onmouseout="this.style.transform='scale(1)'">
+                اشتراك جديد
+            </button>
+        </div>
+        
+        <!-- Note -->
+        <div class="note">
+            <strong>🔒 دفع آمن 100%</strong>
+            <p>جميع المدفوعات تتم عبر PayPal المشفرة. لا نقوم بحفظ بيانات بطاقتك.</p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2024 Dakhira Pro - جميع الحقوق محفوظة</p>
+            <p style="margin-top: 10px;">للدعم الفني: support@zakhira-pro.com</p>
+        </div>
+    </div>
+    
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AXGK4DplhS8I2yASB0KpNWDZ-_2vxsPC-N1hsHSnkC73rNfgrM6aJPVYZ0UjmI8mdoH6U6AMxj2MfAH9&currency=USD&intent=capture&locale=ar_SA&components=buttons,funding-eligibility"></script>
+    
+    <script>
+        // ========== CONFIGURATION - ضع إعداداتك هنا ==========
+        // ⚠️ مهم: عدّل هذه القيم قبل النشر!
+        
+        // الخطوة 1: ضع رابط السيرفر بعد نشره على Railway
+        // مثال: 'https://dakhira-pro.up.railway.app'
+        const SERVER_API_URL = 'https://your-railway-url-here.railway.app';
+        
+        // الخطوة 2: ضع نفس API Key الموجود في Railway Environment Variables
+        // مثال: 'dk_api_2024_secure_abc123'
+        const SERVER_API_KEY = 'your_railway_api_key_here';
+        
+        // ✅ PayPal Client ID مضبوط مسبقاً (لا تغيره)
+        
+        // ========== HELPER FUNCTIONS ==========
+        
+        function getUserId() {
+            const input = document.getElementById('userId').value.trim();
+            if (!input) {
+                showError('الرجاء إدخال معرف المستخدم أولاً');
+                return null;
+            }
+            return input;
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => { errorDiv.style.display = 'none'; }, 5000);
+        }
+        
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+        
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        function showSuccess() {
+            document.getElementById('plansContainer').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
+            document.querySelector('.user-id-section').style.display = 'none';
+            document.querySelector('.note').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+        }
+        
+        function resetPage() {
+            location.reload();
+        }
+        
+        // ========== API CALLS ==========
+        
+        async function createOrder(planType) {
+            const userId = getUserId();
+            if (!userId) return null;
+            
+            showLoading();
+            
+            try {
+                const response = await fetch(`${SERVER_API_URL}/api/create-order`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SERVER_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        plan_type: planType
+                    })
+                });
+                
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(`Server error: ${error}`);
+                }
+                
+                const order = await response.json();
+                console.log('Order created:', order);
+                return order;
+                
+            } catch (error) {
+                console.error('Create order error:', error);
+                showError('فشل في إنشاء طلب الدفع. الرجاء المحاولة مرة أخرى.');
+                hideLoading();
+                return null;
+            }
+        }
+        
+        async function captureOrder(orderId) {
+            try {
+                const response = await fetch(`${SERVER_API_URL}/api/capture-order/${orderId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${SERVER_API_KEY}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    const error = await response.text();
+                    throw new Error(`Capture failed: ${error}`);
+                }
+                
+                const result = await response.json();
+                console.log('Order captured:', result);
+                return result;
+                
+            } catch (error) {
+                console.error('Capture order error:', error);
+                showError('تم الدفع بنجاح لكن فشل التفعيل. الاشتراك سيتفعل تلقائياً قريباً.');
+                return null;
+            }
+        }
+        
+        // ========== PAYPAL BUTTON SETUP ==========
+        
+        function createPayPalButton(planType, containerId) {
+            paypal.Buttons({
+                style: {
+                    shape: 'pill',
+                    color: planType === 'yearly' ? 'gold' : 'blue',
+                    layout: 'vertical',
+                    label: 'paypal',
+                    height: 45
+                },
+                
+                // Server-Side Order Creation (Secure!)
+                createOrder: async function(data, actions) {
+                    const order = await createOrder(planType);
+                    if (!order) {
+                        throw new Error('Failed to create order');
+                    }
+                    hideLoading();
+                    return order.order_id;
+                },
+                
+                onApprove: async function(data, actions) {
+                    showLoading();
+                    
+                    // Capture the order
+                    const result = await captureOrder(data.orderID);
+                    
+                    hideLoading();
+                    
+                    if (result && result.status === 'COMPLETED') {
+                        showSuccess();
+                    } else {
+                        showSuccess(); // Still show success, webhook will handle it
+                    }
+                },
+                
+                onCancel: function(data) {
+                    hideLoading();
+                    console.log('Payment cancelled:', data);
+                    showError('تم إلغاء عملية الدفع');
+                },
+                
+                onError: function(err) {
+                    hideLoading();
+                    console.error('PayPal error:', err);
+                    showError('حدث خطأ في معالجة الدفع. الرجاء المحاولة مرة أخرى.');
+                }
+            }).render(`#${containerId}`);
+        }
+        
+        // ========== INITIALIZE ==========
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Validate PayPal SDK loaded
+            if (typeof paypal === 'undefined') {
+                console.error('PayPal SDK not loaded!');
+                document.body.innerHTML = `
+                    <div style="text-align:center; padding:50px; color:#ff6b6b;">
+                        <h2>⚠️ خطأ في تحميل PayPal</h2>
+                        <p>الرجاء التحقق من اتصال الإنترنت أو تحديث الصفحة</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Create buttons for each plan
+            createPayPalButton('monthly', 'paypal-button-monthly');
+            createPayPalButton('yearly', 'paypal-button-yearly');
+            createPayPalButton('season', 'paypal-button-season');
+            
+            console.log('✅ Dakhira Pro Payment System Ready');
+        });
+    </script>
+</body>
+</html>

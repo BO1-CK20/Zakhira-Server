@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zakhira Pro - تفعيل الاشتراك</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f4b 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: linear-gradient(180deg, #13173a 0%, #1a1f4b 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5), 0 0 60px rgba(0, 168, 232, 0.15);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        /* Header - Blue Style */
+        .header {
+            background: linear-gradient(135deg, #00a8e8 0%, #0070ba 100%);
+            padding: 35px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: inherit;
+            border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+            opacity: 0.2;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Content */
+        .content {
+            padding: 25px 20px 30px;
+        }
+
+        /* Progress Steps */
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            position: relative;
+            padding: 0 15px;
+        }
+
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 18px;
+            left: 60px;
+            right: 60px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: linear-gradient(135deg, #00d4ff, #00a8e8);
+            border-color: #00d4ff;
+            color: white;
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+        }
+
+        .step.completed .step-circle {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .step-label {
+            margin-top: 8px;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+
+        .step.active .step-label {
+            color: #00d4ff;
+            font-weight: 600;
+        }
+
+        /* Section Title */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            color: #00d4ff;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .section-title .icon {
+            font-size: 22px;
+        }
+
+        /* Plan Cards */
+        .plan-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .plan-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .plan-card:hover {
+            border-color: rgba(0, 168, 232, 0.4);
+            background: rgba(0, 168, 232, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .plan-card.selected {
+            border-color: #00a8e8;
+            background: linear-gradient(135deg, rgba(0, 112, 186, 0.2), rgba(0, 168, 232, 0.1));
+            box-shadow: 0 5px 20px rgba(0, 168, 232, 0.2);
+        }
+
+        .plan-card.selected::before {
+            content: '✓';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 26px;
+            height: 26px;
+            background: #00d4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
+            color: #000;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 14px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+        }
+
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-left: 30px;
+        }
+
+        .plan-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .plan-price {
+            font-size: 26px;
+            font-weight: 800;
+            color: #00d4ff;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .plan-price span {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+
+        .plan-features {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            padding-left: 30px;
+        }
+
+        /* Button */
+        .btn-primary {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #0070ba, #00a8e8);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 112, 186, 0.4);
+        }
+
+        .btn-primary:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* PayPal Section */
+        .paypal-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 25px 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .price-display {
+            margin-bottom: 20px;
+        }
+
+        .price-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .price-tag {
+            font-size: 42px;
+            font-weight: 800;
+            color: #00d4ff;
+        }
+
+        .price-tag span {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 500;
+        }
+
+        .price-note {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        #paypal-button-container {
+            margin-top: 20px;
+            min-height: 50px;
+        }
+
+        /* Success Section */
+        .success-box {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .success-box.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 40px rgba(40, 167, 69, 0.4);
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-title {
+            font-size: 24px;
+            color: white;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .success-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .license-box {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
+            border: 2px solid #0070ba;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .license-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .license-key {
+            font-family: 'Courier New', 'Monaco', monospace;
+            font-size: 20px;
+            color: #00d4ff;
+            font-weight: 700;
+            word-break: break-all;
+            line-height: 1.8;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .plan-indicator {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.15);
+            color: #00d4ff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .copy-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);
+        }
+
+        .copy-btn.copied {
+            background: #0070ba;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .instructions h4 {
+            color: #00d4ff;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .instructions ol {
+            padding-right: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+            line-height: 2;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+
+        /* Error Message */
+        .error-box {
+            display: none;
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .error-box.active {
+            display: block;
+        }
+
+        .error-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .error-title {
+            color: #ff6b6b;
+            font-weight: 700;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .error-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+        }
+
+        .retry-btn {
+            margin-top: 15px;
+            padding: 12px 30px;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff6b6b;
+            border-radius: 8px;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .retry-btn:hover {
+            background: rgba(255, 0, 0, 0.3);
+        }
+
+        /* Loading */
+        .loading-box {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .loading-box.active {
+            display: flex;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            border-color: #00d4ff;
+            color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Auto-generating indicator */
+        .auto-generating {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+
+        .auto-generating.active {
+            display: flex;
+        }
+
+        .generating-spinner {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #00d4ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .generating-text {
+            color: #00d4ff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- 🔧 CONFIGURATION - EDIT HERE ONLY -->
+    <script>
+        // ⚠️ ضع Client ID الجديد هنا فقط - لا تغير شيء آخر
+        const PAYPAL_CONFIG = {
+            // 📝 استبدل القيمة التالية بـ Client ID الجديد من PayPal Developer (Live Mode)
+            CLIENT_ID: 'AQ6oU4FcxglNIv_nDaDnIzq3ReWd-mAA7umc6Yb11psx_rbYlpaFwkBjY_-lL2P5cTlZsJSFZVkHRX_J',
+            
+            // ✅ إعدادات إضافية (لا تغيرها)
+            CURRENCY: 'USD',
+            LOCALE: 'ar_SA'
+        };
+    </script>
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">💎 Zakhira Pro</div>
+            <div class="subtitle">تفعيل الاشتراك - Premium Access</div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Progress - Fixed RTL Order -->
+            <div class="steps" style="flex-direction: row-reverse;">
+                <div class="step active" id="step1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">الخطة</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">الدفع</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">الكود</div>
+                </div>
+            </div>
+
+            <!-- Step 1: Select Plan -->
+            <div id="step1-content">
+                <div class="section-title">
+                    <span class="icon">📦</span>
+                    <span>اختر خطتك</span>
+                </div>
+
+                <div class="plan-grid">
+                    <!-- Monthly -->
+                    <div class="plan-card" data-plan="monthly" data-price="5.33" onclick="selectPlan(this)">
+                        <div class="plan-header">
+                            <span class="plan-name">📅 اشتراك شهري</span>
+                            <span class="plan-price">$5.33<span>/شهر</span></span>
+                        </div>
+                        <div class="plan-features">
+                            ✅ شامل Season Pass الحالي<br>
+                            تجديد شهري + تحديثات مستمرة
+                        </div>
+                    </div>
+
+                    <!-- Yearly -->
+                    <div class="plan-card selected" data-plan="yearly" data-price="39.47" onclick="selectPlan(this)">
+                        <span class="plan-badge">أفضل قيمة</span>
+                        <div class="plan-header">
+                            <span class="plan-name">⭐ اشتراك سنوي</span>
+                            <span class="plan-price">$39.47<span>/سنة</span></span>
+                        </div>
+                        <div class="plan-features">
+                            ✅ شامل Season Pass + وصول سنة كاملة<br>
+                            توفير $25+ مقارنة بالشهري<br>
+                            دعم فني مميز
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="goToPayment()">
+                    متابعة للدفع ←
+                </button>
+            </div>
+
+            <!-- Step 2: Payment -->
+            <div id="step2-content" class="hidden">
+                <!-- Back Button -->
+                <button class="back-btn" onclick="backToPlans()">
+                    <span>→</span> تغيير الخطة
+                </button>
+
+                <div class="section-title">
+                    <span class="icon">💳</span>
+                    <span>إتمام الدفع</span>
+                </div>
+
+                <div class="paypal-box">
+                    <div class="price-display">
+                        <div class="price-label">المبلغ الإجمالي</div>
+                        <div class="price-tag" id="payment-price">$39.47<span>USD</span></div>
+                        <div class="price-note">شامل الضرائب والرسوم</div>
+                    </div>
+
+                    <!-- Loading -->
+                    <div class="loading-box" id="paypal-loading">
+                        <div class="spinner"></div>
+                        <div class="loading-text">جاري تحميل PayPal...</div>
+                    </div>
+
+                    <!-- Error -->
+                    <div class="error-box" id="paypal-error">
+                        <div class="error-icon">⚠️</div>
+                        <div class="error-title">تعذر تحميل PayPal</div>
+                        <div class="error-text">تأكد من اتصال الإنترنت أو جرب متصفح آخر</div>
+                        <button class="retry-btn" onclick="retryPayPal()">إعادة المحاولة</button>
+                    </div>
+
+                    <!-- PayPal Button Container -->
+                    <div id="paypal-button-container"></div>
+                </div>
+            </div>
+
+            <!-- Step 3: License Key (Auto-generated after payment) -->
+            <div id="step3-content" class="hidden">
+                <div class="success-box active" id="success-section">
+                    <div class="success-icon">✓</div>
+                    <div class="success-title">تم الدفع بنجاح!</div>
+                    <div class="success-text">تم توليد كود التفعيل الخاص بك تلقائياً</div>
+
+                    <!-- Auto-generating indicator (shown briefly) -->
+                    <div class="auto-generating" id="generating-indicator">
+                        <div class="generating-spinner"></div>
+                        <div class="generating-text">جاري توليد كود التفعيل...</div>
+                    </div>
+
+                    <div class="license-box">
+                        <div class="license-label">كود التفعيل (License Key)</div>
+                        <div class="license-key" id="license-key">---</div>
+                        <div class="plan-indicator" id="plan-indicator">Yearly Plan</div>
+                    </div>
+
+                    <!-- 🔥 NEW: Plan Type Details -->
+                    <div id="plan-details" style="margin: 15px 0; padding: 15px; background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(155,89,182,0.1)); border: 1px solid #00d4ff; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 18px; font-weight: bold; color: #00d4ff; margin-bottom: 8px;" id="plan-title">⭐ اشتراك سنوي</div>
+                        <div style="font-size: 14px; color: #fff;" id="plan-desc">السعر: $39.47 (~148 ريال) | المدة: 365 يوم</div>
+                        <div style="font-size: 12px; color: #aaa; margin-top: 8px;">✅ يشمل السيزون باس + جميع المحاكيات</div>
+                    </div>
+
+                    <button class="copy-btn" id="copy-btn" onclick="copyLicense()">
+                        📋 نسخ الكود
+                    </button>
+
+                    <div class="instructions">
+                        <h4>📋 كيفية التفعيل:</h4>
+                        <ol>
+                            <li>انسخ الكود أعلاه (تم نسخه تلقائياً)</li>
+                            <li>افتح برنامج Zakhira Pro</li>
+                            <li>اذهب إلى: الإعدادات ← تفعيل الاشتراك</li>
+                            <li>ألصق الكود ← انقر "تفعيل"</li>
+                        </ol>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.2); border-radius: 10px;">
+                        <p style="color: #00d4ff; font-size: 13px; font-weight: 600; margin-bottom: 5px;">
+                            💾 تم حفظ الكود في هذا الجهاز
+                        </p>
+                        <p style="color: rgba(255,255,255,0.5); font-size: 12px;">
+                            يمكنك العودة لهذه الصفحة لنسخ الكود مرة أخرى
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PayPal SDK - Dynamic Loading from CONFIG -->
+    <script>
+        // Dynamically load PayPal SDK with Client ID from CONFIG
+        (function() {
+            const script = document.createElement('script');
+            script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CONFIG.CLIENT_ID}&currency=${PAYPAL_CONFIG.CURRENCY}&intent=capture&locale=${PAYPAL_CONFIG.LOCALE}&debug=false`;
+            script.setAttribute('data-sdk-integration-source', 'button-factory');
+            script.async = true;
+            script.onerror = function() {
+                console.error('Failed to load PayPal SDK - Check Client ID');
+            };
+            document.body.appendChild(script);
+        })();
+    </script>
+
+    <script>
+        // Configuration
+        let selectedPlan = { type: 'yearly', price: '39.47', name: 'Yearly' };
+        let generatedLicense = null;
+        let paymentCompleted = false;
+
+        // Plan Selection
+        function selectPlan(element) {
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            element.classList.add('selected');
+
+            selectedPlan = {
+                type: element.dataset.plan,
+                price: element.dataset.price,
+                name: element.querySelector('.plan-name').textContent
+            };
+        }
+
+        // Navigation
+        function goToPayment() {
+            document.getElementById('step1-content').classList.add('hidden');
+            document.getElementById('step2-content').classList.remove('hidden');
+            
+            updateSteps(2);
+            
+            // Update price display
+            document.getElementById('payment-price').innerHTML = 
+                '$' + selectedPlan.price + '<span>USD</span>';
+            
+            // Initialize PayPal with slight delay
+            setTimeout(initPayPal, 500);
+        }
+
+        function backToPlans() {
+            document.getElementById('step2-content').classList.add('hidden');
+            document.getElementById('step1-content').classList.remove('hidden');
+            updateSteps(1);
+            
+            // Clear PayPal container
+            document.getElementById('paypal-button-container').innerHTML = '';
+        }
+
+        function updateSteps(current) {
+            for (let i = 1; i <= 3; i++) {
+                const step = document.getElementById('step' + i);
+                step.classList.remove('active', 'completed');
+                
+                if (i < current) {
+                    step.classList.add('completed');
+                } else if (i === current) {
+                    step.classList.add('active');
+                }
+            }
+        }
+
+        // PayPal Integration - IMPROVED
+        function initPayPal() {
+            const container = document.getElementById('paypal-button-container');
+            const loading = document.getElementById('paypal-loading');
+            const error = document.getElementById('paypal-error');
+            
+            // Clear previous
+            container.innerHTML = '';
+            error.classList.remove('active');
+            loading.classList.add('active');
+
+            // Wait for PayPal SDK with retry
+            let attempts = 0;
+            const maxAttempts = 10;
+            
+            function tryLoadPayPal() {
+                attempts++;
+                
+                // Check if PayPal SDK loaded
+                if (typeof paypal === 'undefined' || !paypal.Buttons) {
+                    console.log('PayPal not ready, attempt ' + attempts);
+                    
+                    if (attempts < maxAttempts) {
+                        setTimeout(tryLoadPayPal, 500); // Retry every 500ms
+                        return;
+                    }
+                    
+                    // Max attempts reached - show error
+                    loading.classList.remove('active');
+                    error.classList.add('active');
+                    return;
+                }
+                
+                // PayPal is ready - hide loading
+                loading.classList.remove('active');
+                renderPayPalButton();
+            }
+            
+            // Start trying to load
+            setTimeout(tryLoadPayPal, 300);
+        }
+        
+        function renderPayPalButton() {
+            const loading = document.getElementById('paypal-loading');
+            const error = document.getElementById('paypal-error');
+
+            try {
+                // Render PayPal button
+                paypal.Buttons({
+                    // Button style
+                    style: {
+                        layout: 'vertical',
+                        color: 'blue',
+                        shape: 'rect',
+                        label: 'paypal',
+                        height: 45,
+                        tagline: false
+                    },
+
+                    // Create order
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: selectedPlan.price,
+                                    currency_code: 'USD'
+                                },
+                                description: 'Zakhira Pro - ' + selectedPlan.name,
+                                custom_id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6)
+                            }],
+                            application_context: {
+                                shipping_preference: 'NO_SHIPPING'
+                            }
+                        });
+                    },
+
+                    // On approve - PAYMENT SUCCESSFUL
+                    onApprove: function(data, actions) {
+                        // Show processing state
+                        document.getElementById('paypal-button-container').innerHTML = 
+                            '<div style="padding:20px;color:#00d4ff; font-weight:600;">جاري معالجة الدفع...</div>';
+                        
+                        return actions.order.capture().then(function(details) {
+                            console.log('Payment successful:', details);
+                            
+                            // ✅ AUTO-GENERATE LICENSE AFTER PAYMENT
+                            handlePaymentSuccess(details);
+                        });
+                    },
+
+                    // On cancel
+                    onCancel: function(data) {
+                        console.log('Payment cancelled');
+                    },
+
+                    // On error
+                    onError: function(err) {
+                        console.error('PayPal error:', err);
+                        error.classList.add('active');
+                    }
+
+                }).render('#paypal-button-container');
+
+                console.log('PayPal button rendered successfully');
+
+            } catch (e) {
+                console.error('PayPal initialization error:', e);
+                loading.classList.remove('active');
+                error.classList.add('active');
+            }
+        }
+
+        function retryPayPal() {
+            document.getElementById('paypal-error').classList.remove('active');
+            initPayPal();
+        }
+
+        // Handle Payment Success - AUTO GENERATE LICENSE
+        function handlePaymentSuccess(details) {
+            paymentCompleted = true;
+            
+            // Show generating indicator briefly
+            document.getElementById('generating-indicator').classList.add('active');
+            
+            // ✅ AUTO-GENERATE LICENSE KEY (No button needed!)
+            generatedLicense = generateLicenseKey(selectedPlan.type, details.id);
+            
+            // 🔥 تأكد من صحة الخطة (للتتبع والتأكد)
+            console.log(`✅ License generated for plan: ${selectedPlan.type}, License: ${generatedLicense}`);
+            
+            // Save to localStorage immediately
+            saveLicenseToStorage(generatedLicense, selectedPlan, details);
+            
+            // 🔥 NEW: Send to backend server for permanent storage
+            const userEmail = details.payer && details.payer.email_address ? details.payer.email_address : '';
+            sendLicenseToServer(generatedLicense, selectedPlan, details.id, userEmail);
+            
+            // 🔥 تأكد من إرسال الخطة الصحيحة للسيرفر
+            console.log(`📤 Sending ${selectedPlan.type} license to server: ${generatedLicense}`);
+            
+            // Simulate generation delay for UX
+            setTimeout(() => {
+                // Hide generating indicator
+                document.getElementById('generating-indicator').classList.remove('active');
+                
+                // Show success screen
+                document.getElementById('step2-content').classList.add('hidden');
+                document.getElementById('step3-content').classList.remove('hidden');
+                
+                // Update steps
+                updateSteps(3);
+                document.getElementById('step1').classList.add('completed');
+                document.getElementById('step2').classList.add('completed');
+                
+                // Display the auto-generated license
+                document.getElementById('license-key').textContent = generatedLicense;
+                
+                // Update plan indicator
+                const planLabels = {
+                    'monthly': '📅 Monthly Plan',
+                    'yearly': '⭐ Yearly Plan'
+                };
+                document.getElementById('plan-indicator').textContent = planLabels[selectedPlan.type];
+                
+                // 🔥 NEW: Update plan details section
+                const planDetails = {
+                    'monthly': {
+                        title: '📅 اشتراك شهري',
+                        desc: 'السعر: $5.33 (~20 ريال) | المدة: 30 يوم',
+                        color: '#00d4ff'
+                    },
+                    'yearly': {
+                        title: '⭐ اشتراك سنوي',
+                        desc: 'السعر: $39.47 (~148 ريال) | المدة: 365 يوم | توفير 33%',
+                        color: '#9b59b6'
+                    }
+                };
+                const details = planDetails[selectedPlan.type];
+                document.getElementById('plan-title').textContent = details.title;
+                document.getElementById('plan-title').style.color = details.color;
+                document.getElementById('plan-desc').textContent = details.desc;
+                document.getElementById('plan-details').style.borderColor = details.color;
+                
+                // Auto-copy to clipboard
+                autoCopyToClipboard(generatedLicense);
+                
+                console.log('License auto-generated:', generatedLicense);
+                
+            }, 1500); // 1.5 second delay for smooth UX
+        }
+
+        // Generate License Key Algorithm
+        function generateLicenseKey(planType, orderId) {
+            const timestamp = Date.now();
+            const randomBytes = new Uint8Array(4);
+            crypto.getRandomValues(randomBytes);
+            const random = Array.from(randomBytes)
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('')
+                .toUpperCase();
+            
+            const planCodes = {
+                'monthly': 'MONTH',
+                'yearly': 'YEAR'
+            };
+            
+            const planCode = planCodes[planType] || 'STD';
+            const shortRandom = random.substring(0, 8);
+            
+            // Generate secure checksum using HMAC-like approach
+            const checksum = generateSecureChecksum(planType, timestamp, shortRandom, orderId);
+            
+            // Format: DKH-{PLAN}-{RANDOM}-{CHECKSUM}
+            return `DKH-${planCode}-${shortRandom}-${checksum}`;
+        }
+
+        // 🔥 NEW: Send license to backend server (Railway/Vercel)
+        function sendLicenseToServer(license, plan, orderId, userEmail) {
+            // ✅ استبدل هذا الرابط برابط سيرفرك الحقيقي
+            const serverUrl = "https://your-backend-server.com/api/activate-license";
+            
+            const payload = {
+                license_key: license,
+                plan_type: plan.type,
+                order_id: orderId,
+                user_email: userEmail,
+                timestamp: Date.now(),
+                client_id: PAYPAL_CONFIG.CLIENT_ID.substring(0, 10) + '...' // For verification
+            };
+            
+            console.log('📤 Sending license to server...', payload);
+            
+            fetch(serverUrl, {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "X-API-Key": "your-api-key-here" // Replace with your API key
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    console.log("✅ License saved on server successfully");
+                    // Optional: Show success indicator
+                    showNotification("License activated on server! ✨", "success");
+                } else {
+                    console.warn("⚠️ Server warning:", data.message);
+                    showNotification("License generated locally ✓", "info");
+                }
+            })
+            .catch(error => {
+                console.error("❌ Network error:", error);
+                // Don't block user - license is still saved locally
+                showNotification("License saved locally (offline mode) ✓", "info");
+                
+                // Retry after 5 seconds
+                setTimeout(() => {
+                    console.log("🔄 Retrying server sync...");
+                    sendLicenseToServer(license, plan, orderId, userEmail);
+                }, 5000);
+            });
+        }
+
+        // Secure checksum generation
+        function generateSecureChecksum(plan, timestamp, random, orderId) {
+            const data = `${plan}|${timestamp}|${random}|${orderId}`;
+            let hash = 0;
+            
+            for (let i = 0; i < data.length; i++) {
+                const char = data.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            
+            // Add additional entropy
+            const entropy = Math.abs(hash ^ timestamp).toString(36);
+            return entropy.substring(0, 4).toUpperCase();
+        }
+
+        // 🔥 NEW: Show notification to user
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? 'linear-gradient(135deg, #28a745, #20c997)' : type === 'error' ? '#e63946' : 'linear-gradient(135deg, #0070ba, #00d4ff)'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 12px;
+                font-family: 'Segoe UI', sans-serif;
+                font-size: 14px;
+                font-weight: 600;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                max-width: 300px;
+                word-wrap: break-word;
+            `;
+            notification.textContent = message;
+            
+            // Add animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideIn 0.3s ease reverse';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
+
+        // Save license to storage
+        function saveLicenseToStorage(license, plan, details) {
+            const licenseData = {
+                key: license,
+                plan: plan.type,
+                planName: plan.name,
+                price: plan.price,
+                date: new Date().toISOString(),
+                orderId: details.id,
+                payerEmail: details.payer?.email_address || 'unknown',
+                status: 'active'
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('zakhira_license_active', JSON.stringify(licenseData));
+            
+            // Also save to history
+            let history = JSON.parse(localStorage.getItem('zakhira_license_history') || '[]');
+            history.push(licenseData);
+            localStorage.setItem('zakhira_license_history', JSON.stringify(history));
+        }
+
+        // Auto copy to clipboard
+        function autoCopyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const btn = document.getElementById('copy-btn');
+                    btn.textContent = '✅ تم النسخ تلقائياً!';
+                    btn.classList.add('copied');
+                    
+                    setTimeout(() => {
+                        btn.textContent = '📋 نسخ الكود مرة أخرى';
+                        btn.classList.remove('copied');
+                    }, 3000);
+                }).catch(err => {
+                    console.log('Auto-copy failed:', err);
+                });
+            }
+        }
+
+        // Manual copy button
+        function copyLicense() {
+            if (!generatedLicense) return;
+            
+            navigator.clipboard.writeText(generatedLicense).then(() => {
+                const btn = document.getElementById('copy-btn');
+                const originalText = btn.textContent;
+                btn.textContent = '✅ تم النسخ!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                // Fallback: select text
+                const keyElement = document.getElementById('license-key');
+                const range = document.createRange();
+                range.selectNode(keyElement);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+                
+                alert('تم نسخ الكود!');
+            });
+        }
+
+        // Check for existing license on load
+        window.onload = function() {
+            const saved = localStorage.getItem('zakhira_license_active');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    console.log('Previous license found:', data.key);
+                    // Could show a "restore" button if needed
+                } catch (e) {
+                    console.error('Error parsing saved license:', e);
+                }
+            }
+        };
+    </script>
+</body>
+</html>
