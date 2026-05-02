@@ -25,3 +25,4 @@ slowapi==0.1.9
 
 # Database (SQLite3 مدمج في Python)
 # لا يحتاج تثبيت
+slowapi==0.1.9
